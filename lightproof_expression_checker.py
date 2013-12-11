@@ -11,6 +11,11 @@ import sys
 TEMP_PATH = './temp'
 LIGHTPROOF_DIC = './temp/pythonpath/lightproof_%s.py'
 
+if sys.platform == 'linux2':
+    SEPARATOR = '\n'
+else:
+    SEPARATOR = '\r\n'
+
 def open_file():
     ''' https://github.com/majorsilence/pygtknotebook/blob/master/examples/more-pygtk/gtk-filechooser-dialog-example.py '''
 
@@ -85,7 +90,8 @@ def compile_rules(dic):
             i[0] = re.compile(i[0])
         except Exception, e:
             msg = e.message or 'Unknown error.'
-            errors.append(u'Bad regular expression at position %d:\nError message: %s\nExpression: %s\nLine: %s\n' % (position, msg, i[0], i))
+            errors.append(u'Bad regular expression at position %d:%s'\
+                'Error message: %s%sExpression: %s%sLine: %s%s' % (position, SEPARATOR, msg, SEPARATOR, i[0], SEPARATOR, i, SEPARATOR))
 
         position += 1
 
@@ -99,7 +105,7 @@ def write_errors_to_file(errors):
         filename = 'invalid_rules_%s.log' % datetime.now().strftime('%d-%m-%Y-%H-%M')
 
         f = codecs.open(filename, 'w', 'utf-8')
-        f.write('# -*- encoding: UTF-8 -*-\n')
+        #f.write('# -*- encoding: UTF-8 -*- %s' % SEPARATOR)
 
         for s in errors:
             f.write(s)

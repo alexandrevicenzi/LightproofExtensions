@@ -11,10 +11,8 @@ import sys
 TEMP_PATH = './temp'
 LIGHTPROOF_DIC = './temp/pythonpath/lightproof_%s.py'
 
-if sys.platform == 'linux2':
-    SEPARATOR = '\n'
-else:
-    SEPARATOR = '\r\n'
+SEPARATOR = '\n' if sys.platform == 'linux2' else '\r\n'
+EDITOR = 'gedit %s' if sys.platform == 'linux2' else 'notepad %s'
 
 def open_file():
     ''' https://github.com/majorsilence/pygtknotebook/blob/master/examples/more-pygtk/gtk-filechooser-dialog-example.py '''
@@ -136,10 +134,7 @@ def check_rules(rules):
             if ret == gtk.RESPONSE_YES:
                 import os
 
-                if sys.platform == 'linux2':
-                    os.system('gedit %s' % filename)
-                else:
-                    os.system('notepad %s' % filename)
+                os.system(EDITOR % filename)
     else:
         show_message(msg='Done. Everything is fine.')
 

@@ -1,5 +1,5 @@
 # -*- encoding: UTF-8 -*-
-# 2013 - Alexandre Vicenzi (vicenzi.alexandre at gmail com)
+# 2013 Alexandre Vicenzi (vicenzi.alexandre at gmail com)
 
 import re
 
@@ -41,3 +41,13 @@ class LightproofChecker:
 		ret = L.doProofreading(1, text, locale, nStartOfSentencePos, nSuggestedSentenceEndPos, ())
 
 		return ret.aErrors
+
+class LightproofCheckerCmd(LightproofChecker):
+
+	def __init__(self):
+		pass
+
+class LightproofCheckerGui(LightproofChecker):
+
+	def __init__(self):
+		pass

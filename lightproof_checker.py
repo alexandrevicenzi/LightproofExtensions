@@ -45,9 +45,9 @@ class LightproofChecker:
 class LightproofCheckerCmd(LightproofChecker):
 
 	def __init__(self):
-		pass
+		LightproofChecker.__init__(self)
 
 class LightproofCheckerGui(LightproofChecker):
 
 	def __init__(self):
-		pass
+		LightproofChecker.__init__(self)

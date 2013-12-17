@@ -16,7 +16,11 @@ EDITOR = 'gedit %s' if sys.platform == 'linux2' else 'notepad %s'
 
 class LightproofExpressionChecker:
 
-    def __init__(self, pkg):
+    def __init__(self):
+        self.pkg = None
+        self.langrules = None
+
+    def load_lang_rules(self, pkg):
         self.pkg = pkg
         self.langrules = __import__('temp.lightproof_' + self.pkg)
 
@@ -40,12 +44,12 @@ class LightproofExpressionChecker:
 class LightproofCheckerCmd(LightproofChecker):
 
     def __init__(self):
-        pass
+        LightproofChecker.__init__(self)
 
 class LightproofCheckerGui(LightproofChecker):
 
     def __init__(self):
-        pass
+        LightproofChecker.__init__(self)
 
 def open_file():
     ''' https://github.com/majorsilence/pygtknotebook/blob/master/examples/more-pygtk/gtk-filechooser-dialog-example.py '''

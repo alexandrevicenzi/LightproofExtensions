@@ -14,6 +14,39 @@ LIGHTPROOF_DIC = './temp/pythonpath/lightproof_%s.py'
 SEPARATOR = '\n' if sys.platform == 'linux2' else '\r\n'
 EDITOR = 'gedit %s' if sys.platform == 'linux2' else 'notepad %s'
 
+class LightproofExpressionChecker:
+
+    def __init__(self, pkg):
+        self.pkg = pkg
+        self.langrules = __import__('temp.lightproof_' + self.pkg)
+
+    def compile_rules(self):
+        ''' Check for bad regular expressions. '''
+
+        errors = []
+        position = 1
+
+        for i in self.langrules.dic:
+            try:
+                i[0] = re.compile(i[0])
+            except Exception, e:
+                msg = e.message or 'Unknown error.'
+                errors.append({'pos' : position, 'msg': msg, 'exp': i[0], 'line': i})
+
+            position += 1
+
+        return errors
+
+class LightproofCheckerCmd(LightproofChecker):
+
+    def __init__(self):
+        pass
+
+class LightproofCheckerGui(LightproofChecker):
+
+    def __init__(self):
+        pass
+
 def open_file():
     ''' https://github.com/majorsilence/pygtknotebook/blob/master/examples/more-pygtk/gtk-filechooser-dialog-example.py '''
 

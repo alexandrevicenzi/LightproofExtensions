@@ -37,3 +37,4 @@ nosetests.xml
 
 # Extensions
 *.oxt
+temp

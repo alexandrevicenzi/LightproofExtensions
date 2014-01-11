@@ -39,9 +39,6 @@ def run(**args):
 	if opt and 'proofread' in opt:
 		L.proofread('')
 
-def upack_oxt(file_name):
-	pass
-
 if __name__ == '__main__':
 
 	mode = []

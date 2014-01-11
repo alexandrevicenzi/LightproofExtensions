@@ -8,7 +8,7 @@ def help():
 	print('Usage: mode [options]')
 	print('Mode parameters:')
 	print('  cmd       execute using command line.')
-	print('  gui       excute using a GUI Iinterface.')
+	print('  gui       execute using a GUI Iinterface (default).')
 	print('Options parameters:')
 	print('  compile   just compile lang rules and check for errors.')
 	print('  proofread just exec proofread and check for errors.')
@@ -38,6 +38,9 @@ def run(**args):
 		L.compile_rules()
 	if opt and 'proofread' in opt:
 		L.proofread('')
+
+def upack_oxt(file_name):
+	pass
 
 if __name__ == '__main__':
 

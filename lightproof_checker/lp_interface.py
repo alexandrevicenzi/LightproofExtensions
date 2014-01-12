@@ -10,6 +10,15 @@ class LPInterdace(GladeWindow):
 	def __init__(self):
 		GladeWindow.__init__(self, 'interface.glade', 'main')
 
+	def on_btn_oxt_open_clicked(self, *args):
+		pass
+
+	def on_btn_test_open_clicked(self, *args):
+		pass
+
+	def on_btn_run_clicked(self, *args):
+		pass
+
 	def on_close(self, *args):
 		self.close()
 		Gtk.main_quit()

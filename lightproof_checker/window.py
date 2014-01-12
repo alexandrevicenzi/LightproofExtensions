@@ -28,7 +28,7 @@ class LightproofWindow(GladeWindow):
 
 
 	def __init__(self):
-		GladeWindow.__init__(self, 'interface.glade', 'main')
+		GladeWindow.__init__(self, 'window.glade', 'main')
 		self.w.show({'rb_compile': True})
 
 	def on_btn_oxt_open_clicked(self, *args):
@@ -44,7 +44,7 @@ class LightproofWindow(GladeWindow):
 		oxt = self.w.oxt_filename.get_text()
 
 		if not oxt:
-			self.append_text('Invalid OXT file.\nAborted.')
+			self.append_text('Invalid OXT file "%s".\nAborted.' % oxt)
 			return
 
 

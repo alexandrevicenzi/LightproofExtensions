@@ -16,6 +16,8 @@ class LightproofChecker:
 
 		self.L = Lightproof(None, None)
 
+		self.locale = self.L.getLocales()[0]
+
 		s = self.L.getImplementationName()
 		self.pkg = s[s.rindex('.') + 1:]
 
@@ -52,13 +54,20 @@ class LightproofChecker:
 		if not self.impl.langrule.has_key(self.pkg):
 			self.__load_rule()
 
-		locale = self.L.getLocales()[0]
 		nStartOfSentencePos = 0
 		nSuggestedSentenceEndPos = len(text)
 
-		ret = self.L.doProofreading(1, text, locale, nStartOfSentencePos, nSuggestedSentenceEndPos, ())
+		ret = self.L.doProofreading(1, text, self.locale, nStartOfSentencePos, nSuggestedSentenceEndPos, ())
 
 		return ret.aErrors
+
+	def word_is_valid(self, word):
+		''' Check if the word is valid. '''
+		return self.impl.spell(self.locale, word)
+
+	def word_suggestions(self, word):
+		''' Get suggestions for the word. '''
+		return self.impl.suggest(self.locale, word)
 
 if __name__ == '__main__':
 

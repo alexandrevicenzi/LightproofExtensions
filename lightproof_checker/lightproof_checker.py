@@ -60,17 +60,9 @@ class LightproofChecker:
 
 		return ret.aErrors
 
-class LightproofCheckerCmd(LightproofChecker):
-
-	def __init__(self):
-		LightproofChecker.__init__(self)
-
-class LightproofCheckerGui(LightproofChecker):
-
-	def __init__(self):
-		LightproofChecker.__init__(self)
-
 if __name__ == '__main__':
+
+	from temp.Lightproof import Lightproof
 
 	L = LightproofChecker()
 	ret = L.proofread('acima citado')

@@ -2,17 +2,32 @@
 # 2013 Alexandre Vicenzi (vicenzi.alexandre at gmail com)
 
 import re
+import os
 
-from Lightproof import Lightproof
+from temp.Lightproof import Lightproof
 
 
 class LightproofChecker:
 
+
 	def __init__(self):
+		# To get errors on LightProof.
+		os.environ['PYUNO_LOGLEVEL'] = '1'
+
 		self.L = Lightproof(None, None)
-		s = L.getImplementationName()
-		self.pkg = s[s.rindex('.') + 1:] 
-		self.langrules = __import__('lightproof_' + self.pkg)
+
+		s = self.L.getImplementationName()
+		self.pkg = s[s.rindex('.') + 1:]
+		
+		impl = 'lightproof_impl_' + self.pkg
+		self.impl = getattr(__import__('temp.' + impl), impl)
+		
+		lng = 'lightproof_' + self.pkg
+		self.langrules = getattr(__import__('temp.' + lng), lng)
+
+	def __load_rule(self):
+		self.impl.langrule[self.pkg] = self.langrules
+		self.impl.compile_rules(self.impl.langrule[self.pkg].dic)
 
 	def compile_rules(self):
 		''' Check for bad regular expressions. '''
@@ -32,13 +47,16 @@ class LightproofChecker:
 		return errors
 
 	def proofread(self, text):
-		'''  '''
-		
-		locale = L.getLocales()[0]
+		''' Assert proofread rules. '''
+
+		if not self.impl.langrule.has_key(self.pkg):
+			self.__load_rule()
+
+		locale = self.L.getLocales()[0]
 		nStartOfSentencePos = 0
 		nSuggestedSentenceEndPos = len(text)
 
-		ret = L.doProofreading(1, text, locale, nStartOfSentencePos, nSuggestedSentenceEndPos, ())
+		ret = self.L.doProofreading(1, text, locale, nStartOfSentencePos, nSuggestedSentenceEndPos, ())
 
 		return ret.aErrors
 
@@ -51,3 +69,9 @@ class LightproofCheckerGui(LightproofChecker):
 
 	def __init__(self):
 		LightproofChecker.__init__(self)
+
+if __name__ == '__main__':
+
+	L = LightproofChecker()
+	ret = L.proofread('acima citado')
+	print (ret)

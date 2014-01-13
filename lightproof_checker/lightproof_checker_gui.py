@@ -49,21 +49,45 @@ class LightproofWindow(GladeWindow):
 	def on_btn_run_clicked(self, *args):
 
 		self.w.results.get_buffer().set_text('')
-		
-		oxt = self.w.oxt_filename.get_text()
+
+		w = self.w.get()
+
+		oxt = w['oxt_filename']
 
 		if not oxt:
 			self.append_text('No file specified.\nYou must select an OXT file.\nAborted.')
 			self.w.oxt_filename.grab_focus()
 			return
 
-		w = self.w.get()
-		
-		t = Thread(target=self.run, args=(oxt, w,))
+		test = w['test_filename']
+
+		if w['rb_test'] or w['rb_both']:
+			if not test:
+				self.append_text('No file specified.\nYou must select a test file.\nAborted.')
+				self.w.test_filename.grab_focus()
+				return
+
+		t = Thread(target=self.run, args=(oxt, test, w,))
 		t.daemon = True
 		t.start()
-		
-	def run(self, oxt, w):
+
+	def run(self, oxt, test, w):
+
+		def compile_rules():
+			self.append_text('Compiling...')
+
+			ret = L.compile_rules()
+
+			if len(ret) > 0:
+				for e in ret:
+					msg = '%s at position %d.\nExpression: %s\nLine: %s'\
+						% (e['msg'], e['pos'], e['exp'], e['line'])
+					self.append_text(msg)
+			else:
+				self.append_text('Success.')
+
+		def do_proofread():
+			pass
 
 		try:
 			if os.path.exists('temp'):
@@ -86,24 +110,17 @@ class LightproofWindow(GladeWindow):
 			L = LightproofChecker()
 
 			if w['rb_compile']:
-				self.append_text('Compiling...')
-
-				ret = L.compile_rules()
-
-				if len(ret) > 0:
-					for e in ret:
-						msg = '%s at position %d.\nExpression: %s\nLine: %s'\
-							% (e['msg'], e['pos'], e['exp'], e['line'])
-						self.append_text(msg)
-				else:
-					self.append_text('Success.')
+				compile_rules()
 
 			elif w['rb_test']:
-				pass
+				do_proofread()
+
 			elif w['rb_both']:
-				pass
+				compile_rules()
+				do_proofread()
+
 			else:
-				self.append_text('Unsupported option.\nAborted.' % oxt)
+				self.append_text('Unsupported option.\nAborted.')
 
 		except Exception, e:
 			self.append_text(e.message)

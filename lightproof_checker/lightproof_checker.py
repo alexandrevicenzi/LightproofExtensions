@@ -18,10 +18,10 @@ class LightproofChecker:
 
 		s = self.L.getImplementationName()
 		self.pkg = s[s.rindex('.') + 1:]
-		
+
 		impl = 'lightproof_impl_' + self.pkg
 		self.impl = getattr(__import__('temp.' + impl), impl)
-		
+
 		lng = 'lightproof_' + self.pkg
 		self.langrules = getattr(__import__('temp.' + lng), lng)
 

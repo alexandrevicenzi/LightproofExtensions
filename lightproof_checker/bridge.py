@@ -10,10 +10,20 @@ from com.sun.star.lang import Locale
 class LightProofBridge:
 
 
-	def __init__(self, soffice_path='soffice'):
-		self.soffice = soffice_path
+	def __init__(self, lang, soffice_path='soffice'):
 
+		self.locale = Locale(lang[0:2], lang[3:5], '')
+		self.soffice_path = soffice_path
 		self.local_ctx = uno.getComponentContext()
+
+		self.__load_soffice_ctx()
+
+		smgr = self.soffice_ctx.ServiceManager
+
+		self.spell_checker = smgr.createInstanceWithContext('com.sun.star.linguistic2.SpellChecker', self.local_ctx)
+		self.grammar_checker = smgr.createInstanceWithContext('org.libreoffice.comp.pyuno.Lightproof.' + lang, self.local_ctx)
+
+	def __load_soffice_ctx(self):
 
 		resolver = self.local_ctx.ServiceManager.createInstanceWithContext('com.sun.star.bridge.UnoUrlResolver', self.local_ctx)
 
@@ -21,38 +31,36 @@ class LightProofBridge:
 
 		while not load:
 			try:
-				self.soffice_ctx = resolver.resolve( "uno:pipe,name=addtemppipe;urp;StarOffice.ComponentContext" )
+				self.soffice_ctx = resolver.resolve('uno:pipe,name=addtemppipe;urp;StarOffice.ComponentContext')
 				load = True
 			except:
-				os.system(self.soffice + ' --accept="pipe,name=addtemppipe;urp;StarOffice.ServiceManager" --headless --nologo --nofirststartwizard &')
+				os.system('%s --accept="pipe,name=addtemppipe;urp;StarOffice.ServiceManager" --headless --nologo --nofirststartwizard &' %\
+					self.soffice_path)
 				time.sleep(4)
 
-		smgr = self.soffice_ctx.ServiceManager
+	def is_valid_word(self, word):
+		return self.spell_checker.isValid(word, self.locale, ())
 
-		self.spellchecker = smgr.createInstanceWithContext("com.sun.star.linguistic2.SpellChecker", self.local_ctx)
-		self.grammar_checker = None
+	def spell(self, word):
+		sug = self.spell_checker.spell(word, self.locale, ())
 
-	def is_valid_word(self, word, lang):
-
-		loc = Locale(lang[0:2], lang[3:5], "")
-
-		return self.spellchecker.isValid(word, loc, ())
-
-	def spell(self, word, lang):
-
-		loc = Locale(lang[0:2], lang[3:5], "")
-		sug = self.spellchecker.spell(word, loc, ())
-		
 		if sug:
 			return sug.getAlternatives()
 		else:
 			return []
 
-if __name__ == '__main__':
-	B = LightProofBridge()
+	def proofread(self, text):
+		return self.grammar_checker.doProofreading(1, text, self.locale, 0, len(text), ())
 
-	if not B.is_valid_word('nao', 'pt_BR'):
+if __name__ == '__main__':
+	B = LightProofBridge('pt_BR')
+
+	if not B.is_valid_word('nao'):
 		print('Suggestions:')
-		print(B.spell('nao', 'pt_BR'))
+		print(B.spell('nao'))
 	else:
 		print('Word is OK.')
+
+	ret = B.proofread('Este  é um novo caso , eu acho')
+	print(ret.aErrors)
+	print(ret.aText)

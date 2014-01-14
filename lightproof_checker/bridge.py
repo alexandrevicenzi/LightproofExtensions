@@ -1,5 +1,6 @@
 # -*- encoding: UTF-8 -*-
 # 2013 Alexandre Vicenzi (vicenzi.alexandre at gmail com)
+# Thanks to Laszlo Nemeth.
 
 import os
 import time
@@ -53,6 +54,7 @@ class LightProofBridge:
 		return self.grammar_checker.doProofreading(1, text, self.locale, 0, len(text), ())
 
 if __name__ == '__main__':
+	
 	B = LightProofBridge('pt_BR')
 
 	if not B.is_valid_word('nao'):

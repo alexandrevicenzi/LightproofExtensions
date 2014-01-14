@@ -17,7 +17,7 @@ lp
 
 A simple LO Lightproof client.
 
-Thanks to Németh László.
+Thanks to Laszlo Nemeth.
 
 
 lightproof_checker

@@ -24,6 +24,11 @@ class LightProofBridge:
 		self.spell_checker = smgr.createInstanceWithContext('com.sun.star.linguistic2.SpellChecker', self.local_ctx)
 		self.grammar_checker = smgr.createInstanceWithContext('org.libreoffice.comp.pyuno.Lightproof.' + lang, self.local_ctx)
 
+	def __del__(self):
+		# FIX-ME
+		# Binary URP bridge already disposed.
+		os.system('killall soffice.bin')
+
 	def __load_soffice_ctx(self):
 
 		resolver = self.local_ctx.ServiceManager.createInstanceWithContext('com.sun.star.bridge.UnoUrlResolver', self.local_ctx)
@@ -54,7 +59,7 @@ class LightProofBridge:
 		return self.grammar_checker.doProofreading(1, text, self.locale, 0, len(text), ())
 
 if __name__ == '__main__':
-	
+
 	B = LightProofBridge('pt_BR')
 
 	if not B.is_valid_word('nao'):

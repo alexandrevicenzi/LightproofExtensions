@@ -10,31 +10,33 @@ class LightProofGui(GladeWindow):
 		GladeWindow.__init__(self, 'gui.glade', 'main')
 
 	def on_main_show(self, *args):
-		self.w.show({'rb_libreoffice' : True, 'rb_spell' : True, 'rb_file' : True})
+		self.w.show({ 'libreoffice' : True, 'spell' : True, 'file' : True, 'manual' : True, })
 
 	def on_context_toggled(self, *args):
 
 		w = self.w.get()
 
-		if w['rb_libreoffice']:
-			self.w.rb_compile.set_sensitive(False)
-			self.w.rb_spell.set_sensitive(True)
-			self.w.rb_grammar.set_sensitive(True)
-			self.w.rb_text.set_sensitive(True)
+		if w['libreoffice']:
+			self.w.compile.set_sensitive(False)
+			self.w.spell.set_sensitive(True)
+			self.w.grammar.set_sensitive(True)
+			self.w.text.set_sensitive(True)
+			self.w.oxt_pkg_f.set_sensitive(True)
 
-			if w['rb_compile']:
-				self.w.show({'rb_spell' : True})
+			if w['compile']:
+				self.w.show({'spell' : True})
 
-		elif w['rb_standalone']:
-			self.w.rb_compile.set_sensitive(True)
-			self.w.rb_spell.set_sensitive(False)
-			self.w.rb_grammar.set_sensitive(False)
-			self.w.rb_text.set_sensitive(False)
+		elif w['standalone']:
+			self.w.compile.set_sensitive(True)
+			self.w.spell.set_sensitive(False)
+			self.w.grammar.set_sensitive(False)
+			self.w.text.set_sensitive(False)
+			self.w.oxt_pkg_f.set_sensitive(False)
 
-			self.w.show({'rb_compile' : True})
+			self.w.show({'compile' : True})
 
-			if w['rb_text']:
-				self.w.show({'rb_file' : True})
+			if w['text']:
+				self.w.show({'file' : True})
 		else:
 			pass
 
@@ -42,19 +44,20 @@ class LightProofGui(GladeWindow):
 
 		w = self.w.get()
 
-		self.w.al_text.hide()
-		self.w.al_file.hide()
-		self.w.bt_file.hide()
+		self.w.hbox_file.hide()
+		self.w.sw_text.hide()
+		self.w.input_url.hide()
+		self.w.input_fr.set_vexpand(False)
 
-		if w['rb_file']:
-			self.w.al_file.show()
-			self.w.bt_file.show()
+		if w['file']:
+			self.w.hbox_file.show()
 
-		elif w['rb_text']:
-			self.w.al_text.show()
+		elif w['text']:
+			self.w.sw_text.show()
+			self.w.input_fr.set_vexpand(True)
 
-		elif w['rb_url']:
-			self.w.al_file.show()
+		elif w['url']:
+			self.w.input_url.show()
 
 		else:
 			pass

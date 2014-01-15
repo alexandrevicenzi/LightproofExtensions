@@ -20,7 +20,7 @@
     <property name="draw_indicator">True</property>
     <signal name="toggled" handler="on_input_toggled" swapped="no"/>
   </object>
-  <object class="GtkRadioButton" id="radiobutton1">
+  <object class="GtkRadioButton" id="options">
     <property name="label" translatable="yes">radiobutton</property>
     <property name="visible">True</property>
     <property name="can_focus">True</property>
@@ -328,7 +328,7 @@ Some options will not work.</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">radiobutton1</property>
+                                <property name="group">oxt_pkg</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -344,7 +344,7 @@ Some options will not work.</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">radiobutton1</property>
+                                <property name="group">oxt_pkg</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -420,6 +420,7 @@ Some options will not work.</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_bt_oxt_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -491,6 +492,7 @@ Some options will not work.</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <signal name="clicked" handler="on_bt_file_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -575,6 +577,7 @@ Some options will not work.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_bt_execute_clicked" swapped="no"/>
               </object>
             </child>
           </object>
@@ -608,6 +611,7 @@ Some options will not work.</property>
                       <object class="GtkTextView" id="results">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="editable">False</property>
                       </object>
                     </child>
                   </object>
@@ -634,7 +638,7 @@ Some options will not work.</property>
       </object>
     </child>
   </object>
-  <object class="GtkRadioButton" id="options">
+  <object class="GtkRadioButton" id="oxt_pkg">
     <property name="label" translatable="yes">radiobutton</property>
     <property name="visible">True</property>
     <property name="can_focus">True</property>

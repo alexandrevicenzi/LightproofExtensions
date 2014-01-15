@@ -1,8 +1,11 @@
 # -*- encoding: UTF-8 -*-
 # 2013 Alexandre Vicenzi (vicenzi.alexandre at gmail com)
 
+import os
+
 from gi.repository import Gtk, GObject
 from gladebuilder import GladeWindow
+
 
 class LightProofGui(GladeWindow):
 
@@ -14,29 +17,29 @@ class LightProofGui(GladeWindow):
 
 	def on_context_toggled(self, *args):
 
+
+		def configure(b):
+			self.w.input_f.set_sensitive(b)
+			self.w.oxt_pkg_f.set_sensitive(b)
+
+			self.w.integrity.set_sensitive(not b)
+			self.w.compile.set_sensitive(not b)
+			self.w.spell.set_sensitive(b)
+			self.w.grammar.set_sensitive(b)
+
 		w = self.w.get()
 
 		if w['libreoffice']:
-			self.w.compile.set_sensitive(False)
-			self.w.spell.set_sensitive(True)
-			self.w.grammar.set_sensitive(True)
-			self.w.text.set_sensitive(True)
-			self.w.oxt_pkg_f.set_sensitive(True)
+			configure(True)
 
-			if w['compile']:
+			if w['compile'] or w['integrity']:
 				self.w.show({'spell' : True})
 
 		elif w['standalone']:
-			self.w.compile.set_sensitive(True)
-			self.w.spell.set_sensitive(False)
-			self.w.grammar.set_sensitive(False)
-			self.w.text.set_sensitive(False)
-			self.w.oxt_pkg_f.set_sensitive(False)
+			configure(False)
 
-			self.w.show({'compile' : True})
-
-			if w['text']:
-				self.w.show({'file' : True})
+			if w['spell'] or w['grammar']:
+				self.w.show({'integrity' : True})
 		else:
 			pass
 
@@ -71,7 +74,12 @@ class LightProofGui(GladeWindow):
 		pass
 
 	def load_state(self):
-		self.w.show({ 'libreoffice' : True, 'spell' : True, 'file' : True, 'manual' : True, })
+
+		if not os.path.exists('gui.state'):
+			self.w.show({ 'libreoffice' : True, 'spell' : True, 'file' : True, 'manual' : True, })
+
+		with open('gui.state', 'r') as f:
+			lines = f.readlines()
 
 if __name__ == "__main__":
 

@@ -8,10 +8,14 @@ import uno
 
 from com.sun.star.lang import Locale 
 
+
 class LightProofBridge:
 
 
 	def __init__(self, lang, soffice_path='soffice'):
+
+		# To get errors on LightProof.
+		os.environ['PYUNO_LOGLEVEL'] = '1'
 
 		self.locale = Locale(lang[0:2], lang[3:5], '')
 		self.soffice_path = soffice_path

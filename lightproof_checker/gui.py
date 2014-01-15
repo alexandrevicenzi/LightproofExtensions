@@ -10,7 +10,7 @@ class LightProofGui(GladeWindow):
 		GladeWindow.__init__(self, 'gui.glade', 'main')
 
 	def on_main_show(self, *args):
-		self.w.show({ 'libreoffice' : True, 'spell' : True, 'file' : True, 'manual' : True, })
+		self.load_state()
 
 	def on_context_toggled(self, *args):
 
@@ -63,8 +63,15 @@ class LightProofGui(GladeWindow):
 			pass
 
 	def on_close(self, *args):
+		self.save_state()
 		self.close()
 		Gtk.main_quit()
+
+	def save_state(self):
+		pass
+
+	def load_state(self):
+		self.w.show({ 'libreoffice' : True, 'spell' : True, 'file' : True, 'manual' : True, })
 
 if __name__ == "__main__":
 

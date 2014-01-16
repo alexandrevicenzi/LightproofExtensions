@@ -5,18 +5,28 @@ import re
 import os
 import uno
 
-from temp.Lightproof import Lightproof
+from extension import unpack_oxt, create_init_file
 
 
 class LightproofStandalone:
 
+	def __init__(self, oxt_file):
+		self.oxt = oxt_file
 
-	def __init__(self):
+	def check_package(self):
 		pass
 
+	def __unpack_package(self):
+		unpack_oxt(self.oxt, 'temp')
+		create_init_file('temp')
+
 	def load_package(self):
+
+		self.__unpack_package()
 		# To get errors on LightProof.
 		os.environ['PYUNO_LOGLEVEL'] = '1'
+
+		from temp.Lightproof import Lightproof
 
 		self.L = Lightproof(None, None)
 
@@ -34,9 +44,6 @@ class LightproofStandalone:
 	def __load_rule(self):
 		self.impl.langrule[self.pkg] = self.langrules
 		self.impl.compile_rules(self.impl.langrule[self.pkg].dic)
-
-	def check_pkg(self):
-		pass
 
 	def compile_rules(self):
 		''' Check for bad regular expressions. '''
@@ -68,8 +75,6 @@ class LightproofStandalone:
 		return ret.aErrors
 
 if __name__ == '__main__':
-
-	from temp.Lightproof import Lightproof
 
 	L = LightproofStandalone()
 

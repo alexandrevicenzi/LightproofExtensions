@@ -12,7 +12,9 @@ from com.sun.star.lang import Locale
 class LightProofBridge:
 
 
-	def __init__(self, lang, soffice_path='soffice'):
+	def __init__(self, lang, soffice_path='soffice', error_func=None):
+
+		self.on_error = error_func
 
 		# To get errors on LightProof.
 		os.environ['PYUNO_LOGLEVEL'] = '1'
@@ -49,9 +51,21 @@ class LightProofBridge:
 				time.sleep(4)
 
 	def is_valid_word(self, word):
+
+		if not self.spell_checker:
+			if self.on_error:
+				self.on_error('Can''t connect to Spell Checker.')
+			return
+
 		return self.spell_checker.isValid(word, self.locale, ())
 
 	def spell(self, word):
+
+		if not self.spell_checker:
+			if self.on_error:
+				self.on_error('Can''t connect to Spell Checker.')
+			return
+
 		sug = self.spell_checker.spell(word, self.locale, ())
 
 		if sug:
@@ -60,6 +74,11 @@ class LightProofBridge:
 			return []
 
 	def proofread(self, text):
+		if not self.grammar_checker:
+			if self.on_error:
+				self.on_error('Can''t connect to Grammar Checker.')
+			return
+
 		return self.grammar_checker.doProofreading(1, text, self.locale, 0, len(text), ())
 
 if __name__ == '__main__':

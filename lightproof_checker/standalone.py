@@ -71,9 +71,11 @@ if __name__ == '__main__':
 
 	from temp.Lightproof import Lightproof
 
-	L = LightproofChecker()
+	L = LightproofStandalone()
+
+	L.load_package()
 
 	print(L.compile_rules())
 	
-	ret = L.proofread('acima citado')
+	ret = L.proofread('não  da  assim , pois.')
 	print (ret)

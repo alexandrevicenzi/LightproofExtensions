@@ -232,8 +232,9 @@ class W:
 			return widget.get_model() # TODO:
 
 		elif isinstance(widget, Gtk.TextView) or issubclass(type(widget), Gtk.TextView):
-			#return widget.get_buffer().get_text()
-			pass
+			start = widget.get_buffer().get_start_iter()
+			end = widget.get_buffer().get_end_iter()
+			return widget.get_buffer().get_text(start, end, True)
 
 		#else:
 		#	print('** Warning: Object not supported: ' + widget.__class__.__name__)

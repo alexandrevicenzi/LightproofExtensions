@@ -82,6 +82,8 @@ class LightProofGui(GladeWindow):
 
 	def on_bt_execute_clicked(self, *args):
 
+		self.w.results.get_buffer().set_text('')
+
 		w = self.w.get()
 
 		t = Thread(target=self.execute, args=(w,))
@@ -110,11 +112,11 @@ class LightProofGui(GladeWindow):
 					self.append_result('File not found: ' + w['file'])
 					return
 
-				with open(w['file']) as f:
+				with open(w['input_file']) as f:
 					text = f.read
 
 			elif w['text']:
-				text = 'nao foi dess ves, mano.'
+				text = w['input_text']
 
 			elif w['url']:
 				text = ''
@@ -122,11 +124,11 @@ class LightProofGui(GladeWindow):
 			else:
 				text = ''
 
-
 			if w['spell']:
 
 				self.append_result('Starting Spell Checker...')
 				self.append_result('Locale: ' + lang)
+				self.append_result('Text: ' + text)
 
 				self.spell_check(text)
 
@@ -141,8 +143,9 @@ class LightProofGui(GladeWindow):
 				pass
 
 	def spell_check(self, text):
+		text = unicode(text, "utf-8")
 
-		for word in re.findall(r"[\w']+", text):
+		for word in re.findall(r"[\w']+", text, re.UNICODE):
 			sug = self.bridge.spell(word)
 
 			if sug:
@@ -165,7 +168,13 @@ class LightProofGui(GladeWindow):
 
 	def load_state(self):
 
-		self.w.show({ 'libreoffice' : True, 'spell' : True, 'file' : True, 'manual' : True, })
+		self.w.show({'libreoffice' : True, 
+					 'spell' : True, 
+					 'file' : True, 
+					 'manual' : True, 
+					 'locale' : 'pt_BR',
+					 'input_text' : 'não  da  assim , pois.',
+					})
 
 		if not os.path.exists('gui.state'):
 			return

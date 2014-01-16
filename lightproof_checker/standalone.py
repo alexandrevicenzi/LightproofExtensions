@@ -13,6 +13,9 @@ class LightproofStandalone:
 	def __init__(self, oxt_file):
 		self.oxt = oxt_file
 
+		if not oxt_file or not os.path.exists(oxt_file):
+			raise IOError('File not found: ' + oxt_file)
+
 	def check_package(self):
 		pass
 
@@ -76,7 +79,7 @@ class LightproofStandalone:
 
 if __name__ == '__main__':
 
-	L = LightproofStandalone()
+	L = LightproofStandalone('')
 
 	L.load_package()
 

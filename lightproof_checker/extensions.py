@@ -39,5 +39,6 @@ if __name__ == '__main__':
 
 	if len(sys.argv) > 1:
 		unpack_oxt(sys.argv[1], 'temp')
+		create_init_file('temp')
 	else:
 		print('Specify an OXT file.')

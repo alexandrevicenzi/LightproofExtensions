@@ -28,14 +28,32 @@ class LightProofGui(GladeWindow):
 	def on_context_toggled(self, *args):
 
 
-		def configure(b):
-			self.w.input_f.set_sensitive(b)
-			self.w.oxt_pkg_f.set_sensitive(b)
+		def configure(lo):
+			if (lo):
+				self.w.input_f.show()
+				self.w.oxt_pkg_f.show()
 
-			self.w.integrity.set_sensitive(not b)
-			self.w.compile.set_sensitive(not b)
-			self.w.spell.set_sensitive(b)
-			self.w.grammar.set_sensitive(b)
+				self.w.integrity.hide()
+				self.w.compile.hide()
+
+				self.w.spell.show()
+				self.w.grammar.show()
+
+				self.w.locale_f.show()
+				self.w.input_fr.show()
+			else:
+				self.w.input_f.hide()
+				self.w.oxt_pkg_f.hide()
+
+				self.w.integrity.show()
+				self.w.compile.show()
+
+				self.w.spell.hide()
+				self.w.grammar.hide()
+
+				self.w.locale_f.hide()
+				self.w.input_fr.hide()
+			
 
 		w = self.w.get()
 

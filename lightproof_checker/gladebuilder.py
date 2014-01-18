@@ -10,6 +10,14 @@ import sys
 from datetime import datetime
 from gi.repository import Gtk, GObject
 
+
+def thread_safe(func):
+
+	def callback(*args):
+		GObject.idle_add(func, *args)
+
+	return callback
+
 class W:
 
 	def __init__(self):
@@ -322,8 +330,10 @@ class GladeWindow:
 				else:
 					gobj.connect(signal_name, handler)
 
+	@thread_safe
 	def show(self):
 		self.window.show_all()
 
+	@thread_safe
 	def close(self):
 		self.window.hide()

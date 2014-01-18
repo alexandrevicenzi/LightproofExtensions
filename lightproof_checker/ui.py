@@ -86,7 +86,6 @@ class LightProofGui(GladeWindow):
 			self.w.oxt_file_f.show()
 		else:
 			pass
-		
 
 	def on_close(self, *args):
 		self.save_state()
@@ -94,8 +93,15 @@ class LightProofGui(GladeWindow):
 		Gtk.main_quit()
 
 	def on_bt_execute_clicked(self, *args):
-		R = ResultsGui()
-		R.show()
+
+		w = self.w.get()
+
+		if w['libreoffice']:
+			pass
+		elif w['standalone']:
+
+			R = Runner()
+			R.oxt_pkg_check(w['integrity'] or w['both_opt'], w['compile'] or w['both_opt'])
 
 	def save_state(self):
 		pass
@@ -115,16 +121,29 @@ class LightProofGui(GladeWindow):
 		with open('gui.state', 'r') as f:
 			lines = f.readlines()
 
-class ResultsGui(GladeWindow):
+class Runner(GladeWindow):
 
 	def __init__(self):
-		GladeWindow.__init__(self, 'ui.glade', 'results')
+		GladeWindow.__init__(self, 'ui.glade', 'runner')
 
-	def run(self, func):
-		pass
+	def oxt_pkg_check(self, integrity, compile):
+		self.show()
 
-	def update_status(self, str):
-		pass
+		t = Thread(target=self.__oxt_pkg_check, args=(integrity, compile,))
+		t.daemon = True
+		t.start()
+
+	def __oxt_pkg_check(self, integrity, compile):
+		
+		if integrity:
+			self.update_status('Checking OXT package...')
+
+		if compile:
+			self.update_status('Compiling OXT package...')
+
+	@thread_safe
+	def update_status(self, text):
+		self.w.results.get_buffer().insert(self.w.results.get_buffer().get_end_iter(), text + "\n")
 
 	def on_bt_close_clicked(self, *args):
 		self.close()

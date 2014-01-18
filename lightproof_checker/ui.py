@@ -5,16 +5,8 @@ import os
 import re
 
 from gi.repository import Gtk, GObject
-from gladebuilder import GladeWindow
+from gladebuilder import GladeWindow, thread_safe
 from threading import Thread
-
-
-def thread_safe(func):
-
-	def callback(*args):
-		GObject.idle_add(func, *args)
-
-	return callback
 
 
 class LightProofGui(GladeWindow):
@@ -27,38 +19,28 @@ class LightProofGui(GladeWindow):
 
 	def on_context_toggled(self, *args):
 
-
 		def configure(lo):
 			if (lo):
 				self.w.input_f.show()
 				self.w.oxt_pkg_f.show()
-
 				self.w.integrity.hide()
 				self.w.compile.hide()
-
 				self.w.spell.show()
 				self.w.grammar.show()
-
 				self.w.oxt_file_f.hide()
-
 				self.w.lo_box_op.show()
+				self.w.lo_box_op.set_vexpand(True)
 
-				self.w.op_box.set_vexpand(True)
 			else:
 				self.w.input_f.hide()
 				self.w.oxt_pkg_f.hide()
-
 				self.w.integrity.show()
 				self.w.compile.show()
-
 				self.w.spell.hide()
 				self.w.grammar.hide()
-
 				self.w.oxt_file_f.show()
-
 				self.w.lo_box_op.hide()
-
-				self.w.op_box.set_vexpand(False)
+				self.w.lo_box_op.set_vexpand(False)
 			
 
 		w = self.w.get()
@@ -80,6 +62,30 @@ class LightProofGui(GladeWindow):
 	def on_input_toggled(self, *args):
 
 		w = self.w.get()
+
+		self.w.hbox_file.hide()
+		self.w.sw_text.hide()
+		self.w.input_url.hide()
+
+		if w['file']:
+			self.w.hbox_file.show()
+		elif w['text']:
+			self.w.sw_text.show()
+		elif w['url']:
+			self.w.input_url.show()
+		else:
+			pass
+
+	def on_oxt_pkg_toggled(self, *args):
+
+		w = self.w.get()
+
+		if w['manual']:
+			self.w.oxt_file_f.hide()
+		elif w['deploy']:
+			self.w.oxt_file_f.show()
+		else:
+			pass
 		
 
 	def on_close(self, *args):
@@ -115,6 +121,9 @@ class ResultsGui(GladeWindow):
 		GladeWindow.__init__(self, 'ui.glade', 'results')
 
 	def run(self, func):
+		pass
+
+	def update_status(self, str):
 		pass
 
 	def on_bt_close_clicked(self, *args):

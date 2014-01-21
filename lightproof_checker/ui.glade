@@ -54,7 +54,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="tooltip_text" translatable="yes">soffice instance.</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">context</property>
                                 <signal name="toggled" handler="on_context_toggled" swapped="no"/>
@@ -67,13 +66,11 @@
                             </child>
                             <child>
                               <object class="GtkRadioButton" id="standalone">
-                                <property name="label" translatable="yes">Standalone</property>
+                                <property name="label" translatable="yes">Extension package</property>
                                 <property name="width_request">180</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="tooltip_text" translatable="yes">Doesn't require LibreOffice files.
-Some options will not work.</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">context</property>
                                 <signal name="toggled" handler="on_context_toggled" swapped="no"/>
@@ -317,7 +314,7 @@ Some options will not work.</property>
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkRadioButton" id="manual">
-                                <property name="label" translatable="yes">Manual installation</property>
+                                <property name="label" translatable="yes">Manual deploy</property>
                                 <property name="width_request">80</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -357,7 +354,7 @@ Some options will not work.</property>
                       <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;b&gt;OXT Package&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;OXT Package deploy&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
                     </child>
@@ -420,6 +417,7 @@ Some options will not work.</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <signal name="clicked" handler="on_btn_oxt_file_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -562,6 +560,7 @@ Some options will not work.</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="on_bt_file_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>

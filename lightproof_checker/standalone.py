@@ -84,6 +84,6 @@ if __name__ == '__main__':
 	L.load_package()
 
 	print(L.compile_rules())
-	
+
 	ret = L.proofread('não  da  assim , pois.')
 	print (ret)

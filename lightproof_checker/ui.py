@@ -6,7 +6,7 @@ import re
 
 from bridge import LightproofBridge
 from gi.repository import Gtk, GObject
-from gladebuilder import GladeWindow, thread_safe
+from gladebuilder import GladeWindow, thread_safe, open_dialog
 from standalone import LightproofStandalone
 from threading import Thread
 
@@ -43,7 +43,7 @@ class LightProofGui(GladeWindow):
 				self.w.oxt_file_f.show()
 				self.w.lo_box_op.hide()
 				self.w.lo_box_op.set_vexpand(False)
-			
+
 
 		w = self.w.get()
 
@@ -112,10 +112,18 @@ class LightProofGui(GladeWindow):
 				pass
 
 			mode = 'manual' if w['manual'] else 'deploy'
-			
+
 			R.libreoffice(w['spell'], w['grammar'], input, mode, w['oxt_file'], w['locale'])
 		elif w['standalone']:
 			R.standalone(w['integrity'] or w['both_opt'], w['compile'] or w['both_opt'])
+
+	def on_btn_oxt_file_clicked(self, *args):
+		filename = open_dialog()
+		self.w.show({'oxt_file': filename})
+
+	def on_bt_file_clicked(self, *args):
+		filename = open_dialog()
+		self.w.show({'input_file': filename})
 
 	def save_state(self):
 		pass
@@ -129,11 +137,7 @@ class LightProofGui(GladeWindow):
 					 'manual' : True, 
 					})
 
-		if not os.path.exists('gui.state'):
-			return
-
-		with open('gui.state', 'r') as f:
-			lines = f.readlines()
+		pass
 
 class Runner(GladeWindow):
 
@@ -149,44 +153,46 @@ class Runner(GladeWindow):
 
 	def __libreoffice(self, spell, grammar, text, pkg_mode, pkg_path, locale):
 
-		import subprocess
+		try:
+			import subprocess
 
-		if not locale:
-			self.update_status('Provide a locale.')
-			return
-
-		if pkg_mode == 'manual':
-			self.update_status('Install your package...')
-			subprocess.call(['unopkg', 'gui'])
-		elif pkg_mode == 'deploy':
-			
-			if not os.path.exists(pkg_path):
-				self.update_status('File not found: ' + pkg_path)
+			if not locale:
+				self.update_status('Provide a locale.')
 				return
 
-			self.update_status('Deployng package...')
-			subprocess.call(['unopkg', '-v', '-f', '-s', pkg_path])
-		else:
-			pass
+			if pkg_mode == 'manual':
+				self.update_status('Install your package...')
+				subprocess.call(['unopkg', 'gui'])
+			elif pkg_mode == 'deploy':
 
-		B = LightproofBridge(locale, error_func=self.update_status)
+				if not os.path.exists(pkg_path):
+					self.update_status('File not found: ' + pkg_path)
+					return
 
-		if spell:
-			self.update_status('Starting Spell Checker...')
-			text = unicode(text, "utf-8")
+				self.update_status('Deployng package...')
+				subprocess.call(['unopkg', '-v', '-f', '-s', pkg_path])
+			else:
+				pass
 
-			for word in re.findall(r"[\w']+", text, re.UNICODE):
-				sug = B.spell(word)
+			B = LightproofBridge(locale, error_func=self.update_status)
 
-				if sug:
-					self.update_status('%s: Not in dictionary. Suggestion: %s' % (word, ', '.join(sug)))
-				else:
-					self.update_status('%s: In dictionary.' % (word))
+			if spell:
+				self.update_status('Starting Spell Checker...')
+				text = unicode(text, "utf-8")
 
-		if grammar:
-			self.update_status('Starting Gramar Checker...')
-			B.proofread(text)
+				for word in re.findall(r"[\w']+", text, re.UNICODE):
+					sug = B.spell(word)
 
+					if sug:
+						self.update_status('%s: Not in dictionary. Suggestion: %s' % (word, ', '.join(sug)))
+					else:
+						self.update_status('%s: In dictionary.' % (word))
+
+			if grammar:
+				self.update_status('Starting Gramar Checker...')
+				B.proofread(text)
+		except Exception, e:
+			self.update_status(e.message)
 
 	def standalone(self, package, integrity, compile):
 		self.show()

@@ -18,6 +18,24 @@ def thread_safe(func):
 
 	return callback
 
+def open_dialog(msg="Please choose a file", gtk_action=Gtk.FileChooserAction.OPEN, filter=None):
+	dialog = Gtk.FileChooserDialog(msg, 
+								   action=gtk_action,
+								   buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK))
+
+	dialog.set_default_size(600, 400)
+
+	response = dialog.run()
+
+	filename = None
+
+	if response == Gtk.ResponseType.OK:
+		filename = dialog.get_filename()
+
+	dialog.destroy()
+
+	return filename
+
 class W:
 
 	def __init__(self):

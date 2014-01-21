@@ -9,7 +9,7 @@ import uno
 from com.sun.star.lang import Locale 
 
 
-class LightProofBridge:
+class LightproofBridge:
 
 
 	def __init__(self, lang, soffice_path='soffice', error_func=None):
@@ -83,7 +83,7 @@ class LightProofBridge:
 
 if __name__ == '__main__':
 
-	B = LightProofBridge('pt_BR')
+	B = LightproofBridge('pt_BR')
 
 	if not B.is_valid_word('nao'):
 		print('Suggestions:')

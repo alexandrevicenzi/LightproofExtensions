@@ -4,8 +4,10 @@
 import os
 import re
 
+from bridge import LightproofBridge
 from gi.repository import Gtk, GObject
 from gladebuilder import GladeWindow, thread_safe
+from standalone import LightproofStandalone
 from threading import Thread
 
 
@@ -96,12 +98,24 @@ class LightProofGui(GladeWindow):
 
 		w = self.w.get()
 
-		if w['libreoffice']:
-			pass
-		elif w['standalone']:
+		R = Runner()
 
-			R = Runner()
-			R.oxt_pkg_check(w['integrity'] or w['both_opt'], w['compile'] or w['both_opt'])
+		if w['libreoffice']:
+			if w['file']:
+				with open(w['input_file'], 'w') as f:
+					input = f.read()
+			elif w['text']:
+				input = w['input_text']
+			elif w['url']:
+				pass
+			else:
+				pass
+
+			mode = 'manual' if w['manual'] else 'deploy'
+			
+			R.libreoffice(w['spell'], w['grammar'], input, mode, w['oxt_file'], w['locale'])
+		elif w['standalone']:
+			R.standalone(w['integrity'] or w['both_opt'], w['compile'] or w['both_opt'])
 
 	def save_state(self):
 		pass
@@ -126,20 +140,82 @@ class Runner(GladeWindow):
 	def __init__(self):
 		GladeWindow.__init__(self, 'ui.glade', 'runner')
 
-	def oxt_pkg_check(self, integrity, compile):
+	def libreoffice(self, spell, grammar, text, pkg_mode, pkg_path, locale):
 		self.show()
 
-		t = Thread(target=self.__oxt_pkg_check, args=(integrity, compile,))
+		t = Thread(target=self.__libreoffice, args=(spell, grammar, text, pkg_mode, pkg_path, locale,))
 		t.daemon = True
 		t.start()
 
-	def __oxt_pkg_check(self, integrity, compile):
-		
-		if integrity:
-			self.update_status('Checking OXT package...')
+	def __libreoffice(self, spell, grammar, text, pkg_mode, pkg_path, locale):
 
-		if compile:
-			self.update_status('Compiling OXT package...')
+		import subprocess
+
+		if not locale:
+			self.update_status('Provide a locale.')
+			return
+
+		if pkg_mode == 'manual':
+			self.update_status('Install your package...')
+			subprocess.call(['unopkg', 'gui'])
+		elif pkg_mode == 'deploy':
+			
+			if not os.path.exists(pkg_path):
+				self.update_status('File not found: ' + pkg_path)
+				return
+
+			self.update_status('Deployng package...')
+			subprocess.call(['unopkg', '-v', '-f', '-s', pkg_path])
+		else:
+			pass
+
+		B = LightproofBridge(locale, error_func=self.update_status)
+
+		if spell:
+			self.update_status('Starting Spell Checker...')
+			text = unicode(text, "utf-8")
+
+			for word in re.findall(r"[\w']+", text, re.UNICODE):
+				sug = B.spell(word)
+
+				if sug:
+					self.update_status('%s: Not in dictionary. Suggestion: %s' % (word, ', '.join(sug)))
+				else:
+					self.update_status('%s: In dictionary.' % (word))
+
+		if grammar:
+			self.update_status('Starting Gramar Checker...')
+			B.proofread(text)
+
+
+	def standalone(self, package, integrity, compile):
+		self.show()
+
+		t = Thread(target=self.__standalone, args=(package, integrity, compile,))
+		t.daemon = True
+		t.start()
+
+	def __standalone(self, package, integrity, compile):
+		try:
+			S = LightproofStandalone()
+			if integrity:
+				self.update_status('Not implemented yet.')
+				#self.update_status('Checking OXT package...')
+				#S.check_package()
+
+			if compile:
+				self.update_status('Compiling OXT package...')
+				S.load_package()
+				ret = S.compile_rules()
+				if len(ret) > 0:
+					for e in ret:
+						msg = '%s at position %d.\nExpression: %s\nLine: %s'\
+							% (e['msg'], e['pos'], e['exp'], e['line'])
+						self.append_text(msg)
+				else:
+					self.append_text('Success.')
+		except Exception, e:
+			self.update_status('Error: ' + e.message)
 
 	@thread_safe
 	def update_status(self, text):

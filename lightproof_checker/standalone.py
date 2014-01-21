@@ -5,7 +5,7 @@ import re
 import os
 import uno
 
-from extension import unpack_oxt, create_init_file
+from extensions import unpack_oxt, create_init_file
 
 
 class LightproofStandalone:
